@@ -14,9 +14,22 @@
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
             --success: #22c55e;
             --warning: #f59e0b;
             --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --shadow-primary-sm: 0 2px 8px rgba(99,102,241,0.3);
+            --shadow-primary-md: 0 4px 14px rgba(99,102,241,0.4);
+            --shadow-card-hover: 0 4px 20px rgba(0,0,0,0.15);
+            --primary-alpha-08: rgba(99,102,241,0.08);
+            --primary-alpha-10: rgba(99,102,241,0.10);
+            --primary-alpha-12: rgba(99,102,241,0.12);
+            --primary-alpha-25: rgba(99,102,241,0.25);
         }
 
         /* ダークモード（デフォルト） */
@@ -76,8 +89,9 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
             background-image:
-                radial-gradient(ellipse at 15% 10%, rgba(99,102,241,0.07) 0%, transparent 55%),
-                radial-gradient(ellipse at 85% 85%, rgba(34,197,94,0.04) 0%, transparent 55%);
+                radial-gradient(ellipse at 15% 10%, rgba(99,102,241,0.16) 0%, transparent 50%),
+                radial-gradient(ellipse at 85% 85%, rgba(34,197,94,0.11) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 20%, rgba(245,158,11,0.06) 0%, transparent 40%);
             color: var(--text);
             min-height: 100vh;
         }
@@ -107,12 +121,13 @@
             text-decoration: none;
         }
         .logo-icon {
-            width: 46px;
-            height: 46px;
+            width: 54px;
+            height: 54px;
             flex-shrink: 0;
+            filter: drop-shadow(0 2px 8px rgba(99,102,241,0.4));
         }
         .logo-name {
-            font-size: 1.5rem;
+            font-size: 1.7rem;
             font-weight: 900;
             letter-spacing: 3px;
             background: linear-gradient(135deg, #6366f1 0%, #22c55e 100%);
@@ -156,6 +171,11 @@
 
 
 
+        @keyframes tab-glow {
+            0%, 100% { box-shadow: 0 4px 18px rgba(99,102,241,0.45); }
+            50%       { box-shadow: 0 4px 28px rgba(99,102,241,0.75), 0 0 0 2px rgba(99,102,241,0.2); }
+        }
+
         /* タブナビゲーション */
         .tabs {
             display: flex;
@@ -168,15 +188,17 @@
             overflow-x: auto;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.10);
         }
         .tabs::-webkit-scrollbar { display: none; }
 
         .tab-btn {
-            padding: 9px 18px;
+            padding: 10px 20px;
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 0.88rem;
+            font-size: 0.95rem;
             font-weight: 500;
             cursor: pointer;
             border-radius: 10px;
@@ -189,14 +211,15 @@
             background: var(--bg-hover);
         }
         .tab-btn.active:hover {
-            background: linear-gradient(135deg, var(--primary) 0%, #818cf8 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
         }
 
         .tab-btn.active {
             color: #fff;
-            background: linear-gradient(135deg, var(--primary) 0%, #818cf8 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             font-weight: 700;
-            box-shadow: 0 2px 10px rgba(99,102,241,0.4);
+            animation: tab-glow 2.8s ease-in-out infinite;
+            letter-spacing: 0.3px;
         }
 
         .tab-content {
@@ -230,9 +253,10 @@
             color: var(--text);
         }
         .sub-tab-btn.active {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             border-color: var(--primary);
             color: white;
+            box-shadow: 0 3px 12px rgba(99,102,241,0.4);
         }
         .sub-content {
             display: none;
@@ -242,8 +266,8 @@
         }
         /* ===== 名言 ===== */
         .quote-card {
-            background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(34,197,94,0.06) 100%);
-            border: 1px solid rgba(99,102,241,0.25);
+            background: linear-gradient(135deg, var(--primary-alpha-08) 0%, rgba(34,197,94,0.06) 100%);
+            border: 1px solid var(--primary-alpha-25);
             border-radius: 14px;
             padding: 22px 26px;
             margin-bottom: 20px;
@@ -308,7 +332,7 @@
             font-size: 1.6rem;
             background: var(--bg);
             border: 2px solid transparent;
-            border-radius: 10px;
+            border-radius: var(--radius-md);
             width: 46px;
             height: 46px;
             cursor: pointer;
@@ -320,14 +344,14 @@
         .mood-btn:hover { transform: scale(1.15); background: var(--bg-hover); }
         .mood-btn.selected {
             border-color: var(--primary);
-            background: rgba(99,102,241,0.12);
+            background: var(--primary-alpha-12);
             transform: scale(1.1);
         }
 
         /* ===== 週次レビュー ===== */
         .weekly-card {
             background: var(--bg-card);
-            border-radius: 16px;
+            border-radius: var(--radius-lg);
             padding: 22px 24px;
             margin-bottom: 20px;
         }
@@ -337,7 +361,7 @@
             align-items: center;
             margin-bottom: 16px;
         }
-        .weekly-header h2 { margin: 0; font-size: 1.2rem; }
+        .weekly-header h2 { margin: 0; font-size: 1.3rem; }
         .weekly-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -374,7 +398,7 @@
         }
         .chart-box {
             background: var(--bg-card);
-            border-radius: 16px;
+            border-radius: var(--radius-lg);
             padding: 20px;
             transition: box-shadow 0.2s;
             overflow: hidden;
@@ -383,7 +407,7 @@
             max-width: 100%;
             height: auto;
         }
-        .chart-box:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
+        .chart-box:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.16); }
         .chart-title {
             font-size: 0.9rem;
             font-weight: bold;
@@ -424,20 +448,20 @@
             margin-bottom: 6px;
         }
         .diary-mood-btn {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             background: var(--bg);
             border: 2px solid transparent;
-            border-radius: 8px;
-            width: 42px;
-            height: 42px;
+            border-radius: var(--radius-md);
+            width: 46px;
+            height: 46px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.15s;
         }
-        .diary-mood-btn:hover { transform: scale(1.1); }
-        .diary-mood-btn.selected { border-color: var(--primary); background: rgba(99,102,241,0.12); }
+        .diary-mood-btn:hover { transform: scale(1.15); background: var(--bg-hover); }
+        .diary-mood-btn.selected { border-color: var(--primary); background: var(--primary-alpha-12); }
         .diary-entry {
             background: var(--bg);
             border-radius: 10px;
@@ -488,7 +512,7 @@
             padding: 10px 16px;
             background: var(--bg);
             border: 2px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             cursor: pointer;
             transition: all 0.2s;
             font-size: 0.95rem;
@@ -500,7 +524,7 @@
         }
         .act-template-chip.selected {
             border-color: var(--primary);
-            background: rgba(99,102,241,0.1);
+            background: var(--primary-alpha-10);
         }
         .act-template-chip .chip-del {
             display: none;
@@ -629,13 +653,14 @@
         /* カード */
         .card {
             background: var(--bg-card);
-            border-radius: 16px;
+            border-radius: var(--radius-lg);
             padding: 22px 24px;
             margin-bottom: 20px;
             transition: box-shadow 0.2s, transform 0.2s;
         }
         .card:hover {
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-card-hover);
         }
 
         .card h2 {
@@ -654,7 +679,7 @@
         input, select, textarea {
             padding: 12px 16px;
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             background: var(--bg);
             color: var(--text);
             font-size: 1rem;
@@ -677,21 +702,21 @@
 
         button {
             padding: 12px 24px;
-            background: linear-gradient(135deg, var(--primary) 0%, #818cf8 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             border: none;
-            border-radius: 10px;
+            border-radius: var(--radius-md);
             color: white;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+            box-shadow: var(--shadow-primary-sm);
         }
 
         button:hover {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
             transform: translateY(-1px);
-            box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+            box-shadow: var(--shadow-primary-md);
         }
 
         button.danger {
@@ -699,7 +724,7 @@
         }
 
         button.danger:hover {
-            background: #dc2626;
+            background: var(--danger-dark);
         }
 
         button.small {
@@ -721,15 +746,15 @@
 
         [data-theme="light"] .header-actions button.secondary,
         [data-theme="light"] button.secondary {
-            background: #f8fafc;
-            border: 1.5px solid #cbd5e1;
-            color: #334155;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            color: var(--text);
             box-shadow: none;
         }
 
         [data-theme="light"] .header-actions button.secondary:hover {
-            background: #f1f5f9;
-            border-color: #94a3b8;
+            background: var(--bg-hover);
+            border-color: var(--text-muted);
         }
 
         /* タスクリスト */
@@ -743,13 +768,14 @@
             gap: 15px;
             padding: 15px;
             background: var(--bg);
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             margin-bottom: 10px;
             transition: all 0.2s;
         }
 
         .task-item:hover {
             background: var(--bg-hover);
+            transform: translateX(3px);
         }
 
         .task-item.completed {
@@ -875,13 +901,13 @@
         }
 
         .main-goal-card {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(99,102,241,0.12) 60%, var(--bg-hover) 100%);
             border-radius: 20px;
             padding: 40px;
             position: relative;
             overflow: hidden;
-            border: 1px solid var(--primary);
-            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99,102,241,0.5);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.28);
         }
 
         .main-goal-card::before {
@@ -1160,18 +1186,24 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--success));
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
         }
+        .stat-card:nth-child(2)::before { background: linear-gradient(90deg, var(--success), #4ade80); }
+        .stat-card:nth-child(3)::before { background: linear-gradient(90deg, var(--warning), #fbbf24); }
+        .stat-card:nth-child(4)::before { background: linear-gradient(90deg, var(--danger), #f87171); }
         .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(99,102,241,0.18);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(99,102,241,0.22);
         }
 
         .stat-number {
             font-size: 2.2rem;
             font-weight: 900;
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             letter-spacing: -1px;
         }
 
@@ -1489,8 +1521,8 @@
 
         /* 応援カード */
         .encourage-banner {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid var(--primary);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(99,102,241,0.14) 50%, var(--bg) 100%);
+            border: 1px solid rgba(99,102,241,0.45);
             border-radius: 16px;
             padding: 28px 32px;
             margin-bottom: 20px;
@@ -1946,12 +1978,12 @@
 
         <!-- タブ -->
         <div class="tabs">
-            <button class="tab-btn active" data-tab="dashboard">🏠 ホーム</button>
-            <button class="tab-btn" data-tab="tasks">✅ タスク</button>
-            <button class="tab-btn" data-tab="habits">🔄 習慣</button>
-            <button class="tab-btn" data-tab="records">📝 記録</button>
-            <button class="tab-btn" data-tab="plan">📅 計画</button>
-            <button class="tab-btn" data-tab="pomodoro">⏱ タイマー</button>
+            <button class="tab-btn active" data-tab="dashboard">🚀 ホーム</button>
+            <button class="tab-btn" data-tab="tasks">⚡ タスク</button>
+            <button class="tab-btn" data-tab="habits">🔥 習慣</button>
+            <button class="tab-btn" data-tab="records">📈 記録</button>
+            <button class="tab-btn" data-tab="plan">🎯 計画</button>
+            <button class="tab-btn" data-tab="pomodoro">🍅 タイマー</button>
         </div>
 
         <!-- タスク管理 -->

@@ -8,7 +8,8 @@
 ## ファイル構成
 
 ```
-app.html   ← すべてのHTML/CSS/JSが入った単一ファイル（約4900行）
+app.html        ← すべてのHTML/CSS/JSが入った単一ファイル（約4900行）
+watch-push.sh   ← app.html を監視して自動コミット＆プッシュするスクリプト
 ```
 
 ## タブ構成
@@ -120,6 +121,20 @@ userQuotes    - ユーザー追加名言 {id, text, author}
 - 大きな変更はPythonスクリプトで一括置換（Edit toolのold_stringマッチが難しい場合）
 - `localStorage` への保存は各 `save〇〇()` 関数を通じて行う
 - エクスポート/インポート対象を追加した際は `exportData()` と `importData()` も必ず更新
+
+## 自動プッシュ
+
+`watch-push.sh` を起動しておくと、`app.html` を保存するたびに自動で GitHub にプッシュされる。
+
+```bash
+cd ~/Desktop/タスク管理
+./watch-push.sh
+```
+
+- 2秒ごとにファイル更新時刻を監視
+- 変更検知 → `git add` → `git commit` → `git push` を自動実行
+- `Ctrl+C` で停止
+- GitHub Pages URL: https://kiyotake1229.github.io/task-manager/app.html
 
 ## 注意事項
 
