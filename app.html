@@ -234,7 +234,7 @@
 
         .tab-content.active {
             display: block;
-            animation: fadeSlideUp 0.32s ease;
+            animation: tabSlideIn 0.38s cubic-bezier(0.34, 1.1, 0.64, 1);
         }
 
         /* サブタブ */
@@ -1032,6 +1032,121 @@
             60%  { transform: rotate(10deg) scale(1.08); }
             100% { transform: rotate(0deg) scale(1); }
         }
+        @keyframes tabSlideIn {
+            from { opacity: 0; transform: translateY(18px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes listItemIn {
+            from { opacity: 0; transform: translateX(-14px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes rippleOut {
+            0%   { transform: scale(0); opacity: 0.45; }
+            100% { transform: scale(5); opacity: 0; }
+        }
+
+        @keyframes progressFill {
+            from { width: 0% !important; }
+        }
+
+        @keyframes countPop {
+            0%   { opacity: 0; transform: scale(0.7) translateY(6px); }
+            70%  { transform: scale(1.08) translateY(-2px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes headerIn {
+            from { opacity: 0; transform: translateY(-18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes habitCheckPop {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.4) rotate(8deg); }
+            70%  { transform: scale(0.88); }
+            100% { transform: scale(1); }
+        }
+
+        /* タブアイコン */
+        .tab-icon {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 5px;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+        }
+        .tab-btn {
+            display: inline-flex;
+            align-items: center;
+        }
+        .tab-btn:hover .tab-icon {
+            transform: scale(1.25) rotate(-8deg);
+        }
+        .tab-btn.active .tab-icon {
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.6));
+        }
+
+        /* Ripple */
+        .ripple {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: rippleOut 0.6s ease-out forwards;
+            pointer-events: none;
+            margin-left: -5px;
+            margin-top: -5px;
+        }
+
+        /* Task item stagger */
+        .task-item {
+            animation: listItemIn 0.3s ease both;
+        }
+        .task-item:nth-child(1) { animation-delay: 0.00s; }
+        .task-item:nth-child(2) { animation-delay: 0.05s; }
+        .task-item:nth-child(3) { animation-delay: 0.10s; }
+        .task-item:nth-child(4) { animation-delay: 0.15s; }
+        .task-item:nth-child(5) { animation-delay: 0.20s; }
+        .task-item:nth-child(6) { animation-delay: 0.25s; }
+        .task-item:nth-child(n+7) { animation-delay: 0.30s; }
+
+        /* Habit item stagger */
+        .habit-item {
+            animation: listItemIn 0.3s ease both;
+        }
+        .habit-item:nth-child(1) { animation-delay: 0.00s; }
+        .habit-item:nth-child(2) { animation-delay: 0.06s; }
+        .habit-item:nth-child(3) { animation-delay: 0.12s; }
+        .habit-item:nth-child(4) { animation-delay: 0.18s; }
+        .habit-item:nth-child(n+5) { animation-delay: 0.24s; }
+
+        /* Habit day チェック時 */
+        .habit-day.completed {
+            animation: habitCheckPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .habit-day:active {
+            transform: scale(0.82) !important;
+        }
+
+        /* Progress bar fill */
+        .progress-fill {
+            animation: progressFill 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Stat number pop */
+        .stat-number {
+            animation: countPop 0.45s cubic-bezier(0.34, 1.3, 0.64, 1);
+        }
+
+        /* Header entrance */
+        header {
+            animation: headerIn 0.5s ease;
+        }
+
 
         .main-progress-text {
             display: flex;
@@ -2030,12 +2145,12 @@
 
         <!-- タブ -->
         <div class="tabs">
-            <button class="tab-btn active" data-tab="dashboard">🚀 ホーム</button>
-            <button class="tab-btn" data-tab="tasks">⚡ タスク</button>
-            <button class="tab-btn" data-tab="habits">🔥 習慣</button>
-            <button class="tab-btn" data-tab="records">📈 記録</button>
-            <button class="tab-btn" data-tab="plan">🎯 計画</button>
-            <button class="tab-btn" data-tab="pomodoro">🍅 タイマー</button>
+            <button class="tab-btn active" data-tab="dashboard"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="tab-icon"><path d="M8 1.5L1.5 6.5V14.5H6V10H10V14.5H14.5V6.5L8 1.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> ホーム</button>
+            <button class="tab-btn" data-tab="tasks"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="tab-icon"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><polyline points="4.5,8 6.5,10 11.5,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> タスク</button>
+            <button class="tab-btn" data-tab="habits"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="tab-icon"><path d="M8 2C4.7 2 2 4.7 2 8s2.7 6 6 6 6-2.7 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><polyline points="11,2 14,2 14,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> 習慣</button>
+            <button class="tab-btn" data-tab="records"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="tab-icon"><rect x="2" y="2" width="8" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><line x1="4.5" y1="6" x2="7.5" y2="6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="8.5" x2="7.5" y2="8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 5.5L14.5 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="14.5" cy="1" r="1.2" fill="currentColor"/></svg> 記録</button>
+            <button class="tab-btn" data-tab="plan"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="tab-icon"><rect x="2" y="3.5" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/><line x1="2" y1="7.5" x2="14" y2="7.5" stroke="currentColor" stroke-width="1.2"/><line x1="5.5" y1="2" x2="5.5" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="10.5" y1="2" x2="10.5" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> 計画</button>
+            <button class="tab-btn" data-tab="pomodoro"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="tab-icon"><circle cx="8" cy="9.5" r="5.5" stroke="currentColor" stroke-width="1.5"/><polyline points="8,7 8,10 10.5,10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5.5" y1="2" x2="10.5" y2="2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> タイマー</button>
         </div>
 
         <!-- タスク管理 -->
@@ -4114,6 +4229,7 @@
                     <div class="stat-label">目標達成率</div>
                 </div>
             `;
+            animateStatNumbers();
 
             const todayList = document.getElementById('todayTasks');
             if (todayTasksList.length === 0) {
