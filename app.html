@@ -1028,6 +1028,48 @@
             border-radius: 50%;
         }
 
+        .calendar-day.has-task-deadline::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 6px;
+            height: 6px;
+            background: var(--warning);
+            border-radius: 50%;
+            box-shadow: 0 0 6px rgba(245,158,11,0.7);
+        }
+
+        .schedule-section-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin: 10px 0 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .schedule-task-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(245,158,11,0.07);
+            border: 1px solid rgba(245,158,11,0.15);
+            margin-bottom: 6px;
+        }
+
+        .schedule-task-item span { flex: 1; font-size: 0.9rem; }
+
+        .priority-badge {
+            font-size: 0.75rem;
+            padding: 2px 7px;
+            border-radius: 20px;
+            background: rgba(99,102,241,0.15);
+            color: var(--primary-light);
+        }
+
         /* 予定リスト */
         .schedule-list {
             margin-top: 20px;
@@ -2630,6 +2672,65 @@
                 <div id="habitAdvice"></div>
             </div>
             </div>
+            <div id="actlog" class="sub-content">
+                <div class="card">
+                    <h2>テンプレート管理</h2>
+                    <div class="input-group">
+                        <input type="text" id="newTplEmoji" placeholder="😀" style="width:60px;text-align:center;">
+                        <input type="text" id="newTplName" placeholder="活動名（例：ランニング）" style="flex:1;">
+                        <input type="number" id="newTplDuration" placeholder="分" style="width:70px;" min="0">
+                        <button onclick="addActTemplate()">追加</button>
+                    </div>
+                    <div id="actTemplateGrid" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"></div>
+                </div>
+                <div class="card">
+                    <h2>活動を記録</h2>
+                    <input type="hidden" id="actEditId">
+                    <div class="study-form-grid">
+                        <div class="form-group">
+                            <label>日付</label>
+                            <input type="date" id="actDate">
+                        </div>
+                        <div class="form-group">
+                            <label>絵文字</label>
+                            <input type="text" id="actEmojiDisp" placeholder="📌" style="width:80px;text-align:center;">
+                        </div>
+                        <div class="form-group">
+                            <label>活動名 <span style="color:var(--danger)">*</span></label>
+                            <input type="text" id="actName" placeholder="何をしましたか？">
+                        </div>
+                        <div class="form-group">
+                            <label>時間</label>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <input type="number" id="actHours" value="0" min="0" max="23" style="width:70px;text-align:center;">
+                                <span style="color:var(--text-muted);">時間</span>
+                                <input type="number" id="actMinutes" value="0" min="0" max="59" style="width:70px;text-align:center;">
+                                <span style="color:var(--text-muted);">分</span>
+                            </div>
+                        </div>
+                        <div class="form-group study-content-group">
+                            <label>やり方・メモ</label>
+                            <input type="text" id="actMethod" placeholder="どのようにやりましたか？">
+                        </div>
+                        <div class="form-group study-content-group">
+                            <label>感想・気づき</label>
+                            <textarea id="actMemo" placeholder="気づいたこと、感じたことなど..."></textarea>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:10px;">
+                        <button onclick="saveActLog()">保存する</button>
+                        <button class="secondary" onclick="clearActForm()">クリア</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>活動ログ一覧</h2>
+                    <div style="margin-bottom:14px;">
+                        <input type="text" id="actSearch" placeholder="🔍 活動を検索..." oninput="renderActLogs()"
+                            style="width:100%;padding:9px 14px;background:rgba(15,23,42,0.5);border:1px solid rgba(255,255,255,0.09);border-radius:10px;color:var(--text);font-size:0.88rem;outline:none;">
+                    </div>
+                    <div id="actLogList"></div>
+                </div>
+            </div>
             <div id="diary" class="sub-content active">
                 <p style="font-size:0.85rem;color:var(--text-muted);margin:0 0 16px 4px;">毎日の気分・よかったこと・振り返りを書きます。日記として長期間残ります。</p>
                 <div class="card">
@@ -2670,6 +2771,10 @@
                 </div>
                 <div class="card">
                     <h2>日記一覧</h2>
+                    <div style="margin-bottom:14px;">
+                        <input type="text" id="diarySearch" placeholder="🔍 日記を検索..." oninput="renderDiaryList()"
+                            style="width:100%;padding:9px 14px;background:rgba(15,23,42,0.5);border:1px solid rgba(255,255,255,0.09);border-radius:10px;color:var(--text);font-size:0.88rem;outline:none;">
+                    </div>
                     <div id="diaryList"></div>
                 </div>
             </div>
@@ -2720,6 +2825,14 @@
                         <input type="text" id="bookAuthor" placeholder="著者名">
                     </div>
                     <div class="form-group">
+                        <label>ステータス</label>
+                        <select id="bookStatus" style="padding:10px 14px;background:rgba(15,23,42,0.5);border:1px solid rgba(255,255,255,0.09);border-radius:10px;color:var(--text);font-size:0.88rem;width:100%;">
+                            <option value="want_to_read">📚 積読</option>
+                            <option value="reading">📖 読書中</option>
+                            <option value="done" selected>✅ 読了</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>読了日</label>
                         <input type="date" id="bookFinishDate">
                     </div>
@@ -2744,6 +2857,11 @@
 
             <div class="card">
                 <h2>読書記録</h2>
+                <input type="hidden" id="bookStatusFilter" value="">
+                <div style="margin-bottom:14px;">
+                    <input type="text" id="bookSearch" placeholder="🔍 本を検索..." oninput="renderBooks()"
+                        style="width:100%;padding:9px 14px;background:rgba(15,23,42,0.5);border:1px solid rgba(255,255,255,0.09);border-radius:10px;color:var(--text);font-size:0.88rem;outline:none;">
+                </div>
                 <div id="bookList"></div>
             </div>
             </div>
@@ -2812,6 +2930,12 @@
         <div id="pomodoro" class="tab-content">
             <div class="card">
                 <div class="pomodoro-container">
+                    <div style="width:100%;max-width:320px;margin:0 auto 20px;">
+                        <label style="font-size:0.82rem;color:var(--text-muted);margin-bottom:6px;display:block;text-align:left;">📋 集中するタスク（任意）</label>
+                        <select id="pomodoroTaskSelect" style="width:100%;padding:10px 14px;background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--text);font-size:0.88rem;cursor:pointer;outline:none;">
+                            <option value="">-- タスクを選択 --</option>
+                        </select>
+                    </div>
                     <div class="pomodoro-status" id="pomodoroStatus">集中タイム</div>
                     <div class="pomodoro-timer work" id="pomodoroTimer">25:00</div>
                     <div class="pomodoro-controls">
@@ -2850,12 +2974,6 @@
 
         <!-- ダッシュボード -->
         <div id="dashboard" class="tab-content active">
-            <div id="encouragement"></div>
-            <div id="quoteSection"></div>
-            <div class="card" id="moodSection" style="padding:16px 20px;margin-bottom:20px;"></div>
-            <div id="weeklyReviewSection"></div>
-            <div id="chartsSection"></div>
-
             <div class="stats" id="statsContainer"></div>
 
             <div class="card">
@@ -2867,6 +2985,12 @@
                 <h2>進行中の目標</h2>
                 <div id="activeGoals"></div>
             </div>
+
+            <div id="encouragement"></div>
+            <div id="quoteSection"></div>
+            <div class="card" id="moodSection" style="padding:16px 20px;margin-bottom:20px;"></div>
+            <div id="weeklyReviewSection"></div>
+            <div id="chartsSection"></div>
         </div>
 
     </div>
@@ -2947,6 +3071,12 @@
                 <label>マイルストーン（改行で区切る）</label>
                 <textarea id="goalMilestones" placeholder="ステップ1&#10;ステップ2&#10;ステップ3"></textarea>
             </div>
+            <div class="form-group">
+                <label>関連する習慣（任意）</label>
+                <select id="goalLinkedHabit" style="padding:10px 14px;background:rgba(15,23,42,0.5);border:1px solid rgba(255,255,255,0.09);border-radius:10px;color:var(--text);font-size:0.88rem;width:100%;">
+                    <option value="">-- 関連付けない --</option>
+                </select>
+            </div>
             <div class="modal-actions">
                 <button onclick="closeGoalModal()" style="background: var(--bg-hover); color: var(--text); border: 1px solid var(--border);">キャンセル</button>
                 <button onclick="saveGoal()">保存</button>
@@ -2996,7 +3126,7 @@
 
                 if (btn.dataset.tab === 'dashboard') renderDashboard();
                 else if (btn.dataset.tab === 'habits') renderHabits();
-                else if (btn.dataset.tab === 'pomodoro') updatePomodoroDisplay();
+                else if (btn.dataset.tab === 'pomodoro') { updatePomodoroDisplay(); updatePomodoroTaskSelect(); }
                 else if (btn.dataset.tab === 'records') initDiaryTab();
                 else if (btn.dataset.tab === 'plan') renderCalendar();
             });
@@ -3938,7 +4068,20 @@
                             pomodoroData.date = new Date().toISOString().split('T')[0];
                             savePomodoroData();
                             playSound();
-                            alert('集中タイム終了！休憩しましょう。');
+                            const taskSel = document.getElementById('pomodoroTaskSelect');
+                            const selTaskId = taskSel ? parseInt(taskSel.value) : 0;
+                            if (selTaskId) {
+                                const linkedTask = tasks.find(t => t.id === selTaskId);
+                                if (linkedTask && confirm('集中タイム終了！お疲れ様！\n\nタスク「' + linkedTask.title + '」は完了しましたか？')) {
+                                    toggleTask(selTaskId);
+                                    taskSel.value = '';
+                                    updatePomodoroTaskSelect();
+                                } else {
+                                    alert('集中タイム終了！休憩しましょう。');
+                                }
+                            } else {
+                                alert('集中タイム終了！休憩しましょう。');
+                            }
                         } else {
                             playSound();
                             alert('休憩終了！次の集中タイムを始めましょう。');
@@ -3967,6 +4110,40 @@
             isWorking = true;
             pomodoroSeconds = parseInt(document.getElementById('workMinutes').value) * 60;
             updatePomodoroDisplay();
+        }
+
+        function updatePomodoroTaskSelect() {
+            const sel = document.getElementById('pomodoroTaskSelect');
+            if (!sel) return;
+            const today = new Date().toISOString().split('T')[0];
+            const pending = tasks.filter(t => !t.completed);
+            const todayTasks = pending.filter(t => t.deadline === today);
+            const otherTasks = pending.filter(t => t.deadline !== today);
+            const prevVal = sel.value;
+            sel.innerHTML = '<option value="">-- タスクを選択 --</option>';
+            if (todayTasks.length) {
+                const g = document.createElement('optgroup');
+                g.label = '今日期限';
+                todayTasks.forEach(t => {
+                    const o = document.createElement('option');
+                    o.value = t.id;
+                    o.textContent = t.title;
+                    g.appendChild(o);
+                });
+                sel.appendChild(g);
+            }
+            if (otherTasks.length) {
+                const g = document.createElement('optgroup');
+                g.label = 'その他';
+                otherTasks.forEach(t => {
+                    const o = document.createElement('option');
+                    o.value = t.id;
+                    o.textContent = t.title;
+                    g.appendChild(o);
+                });
+                sel.appendChild(g);
+            }
+            if (prevVal) sel.value = prevVal;
         }
 
         function skipPomodoro() {
@@ -4028,9 +4205,10 @@
                 const isToday = date.getTime() === today.getTime();
                 const dateStr = date.toISOString().split('T')[0];
                 const hasEvent = schedules.some(s => s.date === dateStr);
+                const hasDeadlineTask = tasks.some(t => t.deadline === dateStr && !t.completed);
 
                 html += `
-                    <div class="calendar-day ${isOtherMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${hasEvent ? 'has-event' : ''}"
+                    <div class="calendar-day ${isOtherMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${hasEvent ? 'has-event' : ''} ${hasDeadlineTask ? 'has-task-deadline' : ''}"
                         onclick="selectDate('${dateStr}')">
                         ${date.getDate()}
                     </div>
@@ -4097,15 +4275,29 @@
             const daySchedules = schedules
                 .filter(s => s.date === dateStr)
                 .sort((a, b) => (a.time || '99:99').localeCompare(b.time || '99:99'));
+            const dayTasks = tasks.filter(t => t.deadline === dateStr && !t.completed);
 
             const list = document.getElementById('scheduleList');
 
-            if (daySchedules.length === 0) {
+            if (daySchedules.length === 0 && dayTasks.length === 0) {
                 list.innerHTML = '<div class="empty-state"><p>予定がありません</p></div>';
                 return;
             }
 
-            list.innerHTML = daySchedules.map(s => `
+            const taskHtml = dayTasks.length > 0 ? `
+                <div class="schedule-task-section">
+                    <div class="schedule-section-label">📋 期限タスク</div>
+                    ${dayTasks.map(t => `
+                        <div class="schedule-task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="toggleTask(${t.id}); renderCalendar();">
+                            <span>${escapeHtml(t.title)}</span>
+                            <span class="priority-badge">${{'high':'高','medium':'中','low':'低'}[t.priority]}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : '';
+
+            const scheduleHtml = daySchedules.map(s => `
                 <div class="schedule-item">
                     <span class="schedule-time">${s.time || '終日'}</span>
                     <div style="flex: 1">
@@ -4115,23 +4307,40 @@
                     <button class="small danger" onclick="deleteSchedule(${s.id})">削除</button>
                 </div>
             `).join('');
+
+            list.innerHTML = taskHtml + scheduleHtml;
         }
 
         // ============ 目標機能 ============
         function openGoalModal(goalId = null) {
             editingGoalId = goalId;
 
+            const habitSel = document.getElementById('goalLinkedHabit');
+            if (habitSel) {
+                const prev = habitSel.value;
+                habitSel.innerHTML = '<option value="">-- 関連付けない --</option>';
+                habits.forEach(h => {
+                    const o = document.createElement('option');
+                    o.value = h.id;
+                    o.textContent = h.emoji + ' ' + h.name;
+                    habitSel.appendChild(o);
+                });
+                habitSel.value = prev;
+            }
+
             if (goalId) {
                 const goal = goals.find(g => g.id === goalId);
                 document.getElementById('goalModalTitle').textContent = '目標を編集';
                 document.getElementById('goalTitle').value = goal.title;
                 document.getElementById('goalDeadline').value = goal.deadline;
+                if (document.getElementById('goalLinkedHabit')) document.getElementById('goalLinkedHabit').value = goal.linkedHabitId || '';
                 document.getElementById('goalDescription').value = goal.description || '';
                 document.getElementById('goalMilestones').value = goal.milestones.map(m => m.text).join('\n');
             } else {
                 document.getElementById('goalModalTitle').textContent = '新しい目標';
                 document.getElementById('goalTitle').value = '';
                 document.getElementById('goalDeadline').value = '';
+                if (document.getElementById('goalLinkedHabit')) document.getElementById('goalLinkedHabit').value = '';
                 document.getElementById('goalDescription').value = '';
                 document.getElementById('goalMilestones').value = '';
             }
@@ -4145,6 +4354,7 @@
         }
 
         function saveGoal() {
+            const linkedHabitId = parseInt(document.getElementById('goalLinkedHabit')?.value) || null;
             const title = document.getElementById('goalTitle').value.trim();
             if (!title) return;
 
@@ -4157,6 +4367,7 @@
                 const goal = goals.find(g => g.id === editingGoalId);
                 goal.title = title;
                 goal.deadline = document.getElementById('goalDeadline').value;
+                goal.linkedHabitId = linkedHabitId;
                 goal.description = document.getElementById('goalDescription').value;
 
                 const oldMilestones = goal.milestones;
@@ -4169,6 +4380,7 @@
                     id: Date.now(),
                     title,
                     deadline: document.getElementById('goalDeadline').value,
+                    linkedHabitId: linkedHabitId,
                     description: document.getElementById('goalDescription').value,
                     milestones: milestoneTexts.map(text => ({ text, completed: false })),
                     createdAt: new Date().toISOString()
@@ -4223,6 +4435,14 @@
                             <div>
                                 <h3 class="goal-title">${escapeHtml(goal.title)}</h3>
                                 ${goal.deadline ? `<div class="goal-deadline">期限: ${formatDate(goal.deadline)}</div>` : ''}
+                                ${goal.linkedHabitId ? (() => {
+                                    const lh = habits.find(h => h.id === goal.linkedHabitId);
+                                    if (!lh) return '';
+                                    const s = getStreak(lh);
+                                    return `<div style="display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:4px 10px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.2);border-radius:20px;font-size:0.82rem;">` +
+                                        `<span>${lh.emoji}</span><span style="color:var(--text-muted);">${lh.name}</span>` +
+                                        `<span style="color:var(--primary-light);font-weight:700;">${s}日連続</span></div>`;
+                                })() : ''}
                                 ${goal.description ? `<p style="color: var(--text-muted); margin-top: 10px">${escapeHtml(goal.description)}</p>` : ''}
                             </div>
                             <div style="display: flex; gap: 10px">
@@ -5034,11 +5254,12 @@
             const notes = document.getElementById('bookNotes').value.trim();
             const editId = document.getElementById('bookTitle').dataset.editId;
 
+            const status = document.getElementById('bookStatus')?.value || 'done';
             if (editId) {
                 const idx = books.findIndex(b => b.id === parseInt(editId));
-                if (idx >= 0) books[idx] = { ...books[idx], title, author, finishDate, rating, notes };
+                if (idx >= 0) books[idx] = { ...books[idx], title, author, finishDate, rating, notes, status };
             } else {
-                books.push({ id: Date.now(), title, author, finishDate, rating, notes, createdAt: new Date().toISOString() });
+                books.push({ id: Date.now(), title, author, finishDate, rating, notes, status, createdAt: new Date().toISOString() });
             }
 
             saveBooks();
@@ -5051,6 +5272,7 @@
             document.getElementById('bookAuthor').value = '';
             document.getElementById('bookNotes').value = '';
             document.getElementById('bookRating').value = 0;
+            if (document.getElementById('bookStatus')) document.getElementById('bookStatus').value = 'done';
             selectedBookRating = 0;
             highlightStars(0);
             delete document.getElementById('bookTitle').dataset.editId;
@@ -5073,6 +5295,7 @@
             document.getElementById('bookFinishDate').value = book.finishDate || '';
             document.getElementById('bookRating').value = book.rating || 0;
             document.getElementById('bookNotes').value = book.notes || '';
+            if (document.getElementById('bookStatus')) document.getElementById('bookStatus').value = book.status || 'done';
             selectedBookRating = book.rating || 0;
             highlightStars(selectedBookRating);
             document.querySelector('#books .card button').textContent = '更新する';
@@ -5096,31 +5319,48 @@
             const thisYM = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
             const lastMonthDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
             const lastYM = `${lastMonthDate.getFullYear()}-${String(lastMonthDate.getMonth() + 1).padStart(2, '0')}`;
-            const thisMonthCount = books.filter(b => (b.finishDate || '').startsWith(thisYM)).length;
-            const lastMonthCount = books.filter(b => (b.finishDate || '').startsWith(lastYM)).length;
+
+            const statusFilter = document.getElementById('bookStatusFilter')?.value || '';
+            const q = (document.getElementById('bookSearch')?.value || '').toLowerCase().trim();
+            let filtered = books;
+            if (statusFilter) filtered = filtered.filter(b => (b.status || 'done') === statusFilter);
+            if (q) filtered = filtered.filter(b => b.title.toLowerCase().includes(q) ||
+                (b.author||'').toLowerCase().includes(q) ||
+                (b.notes||'').toLowerCase().includes(q));
+
+            const thisMonthCount = books.filter(b => (b.finishDate || '').startsWith(thisYM) && (b.status||'done') === 'done').length;
+            const lastMonthCount = books.filter(b => (b.finishDate || '').startsWith(lastYM) && (b.status||'done') === 'done').length;
+            const readingCount = books.filter(b => (b.status||'done') === 'reading').length;
+            const wantCount = books.filter(b => (b.status||'done') === 'want_to_read').length;
 
             statsEl.innerHTML = `
-                <div class="reading-stat-card">
+                <div class="reading-stat-card" onclick="document.getElementById('bookStatusFilter').value='';renderBooks();" style="cursor:pointer;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                     <div class="reading-stat-num">${books.length}</div>
                     <div class="reading-stat-label">累計冊数</div>
                 </div>
-                <div class="reading-stat-card">
-                    <div class="reading-stat-num">${thisMonthCount}</div>
-                    <div class="reading-stat-label">今月</div>
+                <div class="reading-stat-card" onclick="document.getElementById('bookStatusFilter').value='reading';renderBooks();" style="cursor:pointer;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <div class="reading-stat-num">${readingCount}</div>
+                    <div class="reading-stat-label">読書中</div>
                 </div>
-                <div class="reading-stat-card">
-                    <div class="reading-stat-num">${lastMonthCount}</div>
-                    <div class="reading-stat-label">先月</div>
+                <div class="reading-stat-card" onclick="document.getElementById('bookStatusFilter').value='want_to_read';renderBooks();" style="cursor:pointer;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <div class="reading-stat-num">${wantCount}</div>
+                    <div class="reading-stat-label">積読</div>
+                </div>
+                <div class="reading-stat-card" onclick="document.getElementById('bookStatusFilter').value='done';renderBooks();" style="cursor:pointer;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <div class="reading-stat-num">${thisMonthCount}</div>
+                    <div class="reading-stat-label">今月読了</div>
                 </div>
             `;
 
-            if (books.length === 0) {
-                listEl.innerHTML = '<div class="empty-state"><p>まだ本が登録されていません。読み終えた本を記録しよう！</p></div>';
+            if (filtered.length === 0) {
+                listEl.innerHTML = books.length === 0
+                    ? '<div class="empty-state"><p>まだ本が登録されていません。読み終えた本を記録しよう！</p></div>'
+                    : '<div class="empty-state"><p>該当する本が見つかりません</p></div>';
                 return;
             }
 
             const groups = {};
-            [...books].sort((a, b) => (b.finishDate || '').localeCompare(a.finishDate || '')).forEach(book => {
+            [...filtered].sort((a, b) => (b.finishDate || b.createdAt || '').localeCompare(a.finishDate || a.createdAt || '')).forEach(book => {
                 const ym = book.finishDate ? book.finishDate.slice(0, 7) : 'no-date';
                 if (!groups[ym]) groups[ym] = [];
                 groups[ym].push(book);
@@ -5132,13 +5372,20 @@
                     return `${y}年${parseInt(m)}月`;
                 })();
 
-                const booksHtml = booksInMonth.map(book => `
+                const statusLabel = { done: '✅ 読了', reading: '📖 読書中', want_to_read: '📚 積読' };
+                const statusColor = { done: 'rgba(34,197,94,0.15)', reading: 'rgba(99,102,241,0.15)', want_to_read: 'rgba(245,158,11,0.15)' };
+                const booksHtml = booksInMonth.map(book => {
+                    const st = book.status || 'done';
+                    return `
                     <div class="book-item">
                         <div class="book-info">
-                            <div class="book-title-text">${escapeHtml(book.title)}</div>
+                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+                                <div class="book-title-text" style="margin:0;">${escapeHtml(book.title)}</div>
+                                <span style="font-size:0.75rem;padding:2px 9px;border-radius:20px;background:${statusColor[st]};white-space:nowrap;">${statusLabel[st]}</span>
+                            </div>
                             ${book.author ? `<div class="book-author-text">${escapeHtml(book.author)}</div>` : ''}
                             ${book.rating ? `<div class="book-stars-display">${starsHtml(book.rating)}</div>` : ''}
-                            ${book.finishDate ? `<div class="book-date-text">読了日: ${book.finishDate.replace(/-/g, '/')}</div>` : ''}
+                            ${book.finishDate && st === 'done' ? `<div class="book-date-text">読了日: ${book.finishDate.replace(/-/g, '/')}</div>` : ''}
                             ${book.notes ? `<div class="book-notes-text">${escapeHtml(book.notes)}</div>` : ''}
                         </div>
                         <div class="book-actions">
@@ -5146,7 +5393,7 @@
                             <button class="small danger" onclick="deleteBook(${book.id})">削除</button>
                         </div>
                     </div>
-                `).join('');
+                `}).join('');
 
                 return `
                     <div class="month-group">
@@ -5486,13 +5733,21 @@
         function renderActLogs() {
             const el = document.getElementById('actLogList');
             if (!el) return;
-            if (actLogs.length === 0) {
-                el.innerHTML = '<div class="empty-state"><p>まだ記録がありません</p></div>';
+            const q = (document.getElementById('actSearch')?.value || '').toLowerCase().trim();
+            let logs = actLogs;
+            if (q) {
+                logs = logs.filter(l => l.name.toLowerCase().includes(q) ||
+                    (l.memo||'').toLowerCase().includes(q) ||
+                    (l.method||'').toLowerCase().includes(q) ||
+                    l.date.includes(q));
+            }
+            if (logs.length === 0) {
+                el.innerHTML = q ? '<div class="empty-state"><p>該当する記録が見つかりません</p></div>' : '<div class="empty-state"><p>まだ記録がありません</p></div>';
                 return;
             }
             // Group by date
             const grouped = {};
-            actLogs.forEach(l => { (grouped[l.date] = grouped[l.date] || []).push(l); });
+            logs.forEach(l => { (grouped[l.date] = grouped[l.date] || []).push(l); });
             const dates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
             el.innerHTML = dates.map(date => {
                 const d = new Date(date + 'T00:00:00');
@@ -5942,11 +6197,19 @@
         function renderDiaryList() {
             const el = document.getElementById('diaryList');
             if (!el) return;
-            if (diaryLogs.length === 0) {
-                el.innerHTML = '<div class="empty-state"><p>まだ日記がありません。今日の振り返りを書いてみましょう。</p></div>';
+            const q = (document.getElementById('diarySearch')?.value || '').toLowerCase().trim();
+            let logs = diaryLogs;
+            if (q) {
+                logs = logs.filter(e => (e.good||'').toLowerCase().includes(q) ||
+                    (e.reflection||'').toLowerCase().includes(q) ||
+                    (e.tomorrow||'').toLowerCase().includes(q) ||
+                    e.date.includes(q));
+            }
+            if (logs.length === 0) {
+                el.innerHTML = q ? '<div class="empty-state"><p>該当する日記が見つかりません</p></div>' : '<div class="empty-state"><p>まだ日記がありません。今日の振り返りを書いてみましょう。</p></div>';
                 return;
             }
-            const sorted = [...diaryLogs].sort((a,b) => b.date.localeCompare(a.date));
+            const sorted = [...logs].sort((a,b) => b.date.localeCompare(a.date));
             el.innerHTML = sorted.map(e => {
                 const d    = new Date(e.date + 'T00:00:00');
                 const lbl  = d.toLocaleDateString('ja-JP', {year:'numeric',month:'long',day:'numeric',weekday:'short'});
