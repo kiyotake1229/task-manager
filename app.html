@@ -1788,6 +1788,80 @@
             background: rgba(99,102,241,0.08);
             border-radius: 8px;
         }
+
+        /* ===== 休止期間 ===== */
+        .rest-period-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .rest-period-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(15,23,42,0.45);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+        .rest-period-item:hover { border-color: rgba(99,102,241,0.25); }
+        .rest-period-emoji { font-size: 1.4rem; flex-shrink: 0; }
+        .rest-period-info { flex: 1; min-width: 0; }
+        .rest-period-label { font-weight: 600; font-size: 0.95rem; }
+        .rest-period-dates { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+        .rest-period-active {
+            display: inline-block;
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(34,197,94,0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34,197,94,0.25);
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .rest-period-upcoming {
+            display: inline-block;
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(99,102,241,0.12);
+            color: var(--primary-light);
+            border: 1px solid rgba(99,102,241,0.2);
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .rest-add-form {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr 1fr auto;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        @media (max-width: 640px) {
+            .rest-add-form { grid-template-columns: 1fr 1fr; }
+            .rest-add-form .rest-type-select { grid-column: 1 / -1; }
+        }
+        .rest-type-select {
+            font-size: 1.3rem;
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 9px 12px;
+            cursor: pointer;
+            color: var(--text);
+        }
+        .habit-day.rest-day {
+            background: rgba(99,102,241,0.12) !important;
+            border: 1px dashed rgba(99,102,241,0.35) !important;
+            color: var(--primary-light);
+            cursor: default;
+            opacity: 0.75;
+        }
+        .habit-day.rest-day:hover { transform: none !important; }
+
         .habit-advice-empty {
             color: var(--text-muted);
             font-size: 0.9rem;
@@ -2515,6 +2589,29 @@
                 </p>
             </div>
 
+            <div class="card" id="restPeriodsCard">
+                <h2 style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                    <span>🏖️ 休止期間</span>
+                    <button class="secondary small" onclick="toggleRestForm()" id="restFormToggle">＋ 追加</button>
+                </h2>
+                <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:14px;">旅行・体調不良・休養中はここに登録するとストリークが守られます</p>
+                <div id="restPeriodList"></div>
+                <div id="restAddForm" style="display:none;">
+                    <div class="rest-add-form">
+                        <select class="rest-type-select" id="restType">
+                            <option value="✈️">✈️ 旅行</option>
+                            <option value="🤒">🤒 体調不良</option>
+                            <option value="😴">😴 休養</option>
+                            <option value="📅">📅 その他</option>
+                        </select>
+                        <input type="text" id="restLabel" placeholder="名前（例：沖縄旅行）" style="min-width:0;">
+                        <input type="date" id="restStart">
+                        <input type="date" id="restEnd">
+                        <button onclick="addRestPeriod()">登録</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <h2>習慣一覧</h2>
                 <div id="habitList"></div>
@@ -2923,6 +3020,7 @@
         let schedules = JSON.parse(localStorage.getItem('schedules')) || [];
         let goals = JSON.parse(localStorage.getItem('goals')) || [];
         let habits = JSON.parse(localStorage.getItem('habits')) || [];
+        let restPeriods = JSON.parse(localStorage.getItem('restPeriods')) || [];
         let pomodoroData = JSON.parse(localStorage.getItem('pomodoroData')) || { count: 0, date: null };
         let studyLogs = JSON.parse(localStorage.getItem('studyLogs')) || [];
         let books = JSON.parse(localStorage.getItem('books')) || [];
@@ -2942,6 +3040,7 @@
         function saveSchedules() { localStorage.setItem('schedules', JSON.stringify(schedules)); }
         function saveGoals() { localStorage.setItem('goals', JSON.stringify(goals)); }
         function saveHabits() { localStorage.setItem('habits', JSON.stringify(habits)); }
+        function saveRestPeriods() { localStorage.setItem('restPeriods', JSON.stringify(restPeriods)); }
         function savePomodoroData() { localStorage.setItem('pomodoroData', JSON.stringify(pomodoroData)); }
         function saveStudyLogs() { localStorage.setItem('studyLogs', JSON.stringify(studyLogs)); }
         function saveBooks() { localStorage.setItem('books', JSON.stringify(books)); }
@@ -3181,6 +3280,82 @@
             renderHabits();
         }
 
+
+        // ============ 休止期間 ============
+        function isRestDay(dateStr) {
+            return restPeriods.some(p => dateStr >= p.startDate && dateStr <= p.endDate);
+        }
+        function getRestEmoji(dateStr) {
+            const p = restPeriods.find(p => dateStr >= p.startDate && dateStr <= p.endDate);
+            return p ? p.emoji : '🏖️';
+        }
+        function getRestLabel(dateStr) {
+            const p = restPeriods.find(p => dateStr >= p.startDate && dateStr <= p.endDate);
+            return p ? p.label : '休止日';
+        }
+
+        function toggleRestForm() {
+            const f = document.getElementById('restAddForm');
+            const btn = document.getElementById('restFormToggle');
+            const open = f.style.display === 'none';
+            f.style.display = open ? 'block' : 'none';
+            btn.textContent = open ? '✕ 閉じる' : '＋ 追加';
+            if (open) {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('restStart').value = today;
+                document.getElementById('restEnd').value = today;
+            }
+        }
+
+        function addRestPeriod() {
+            const emoji     = document.getElementById('restType').value;
+            const label     = document.getElementById('restLabel').value.trim() || emoji + ' 休止';
+            const startDate = document.getElementById('restStart').value;
+            const endDate   = document.getElementById('restEnd').value;
+            if (!startDate || !endDate) return;
+            if (endDate < startDate) { alert('終了日は開始日以降にしてください'); return; }
+            restPeriods.push({ id: Date.now(), emoji, label, startDate, endDate });
+            saveRestPeriods();
+            document.getElementById('restLabel').value = '';
+            toggleRestForm();
+            renderRestPeriods();
+            renderHabits();
+        }
+
+        function deleteRestPeriod(id) {
+            restPeriods = restPeriods.filter(p => p.id !== id);
+            saveRestPeriods();
+            renderRestPeriods();
+            renderHabits();
+        }
+
+        function renderRestPeriods() {
+            const container = document.getElementById('restPeriodList');
+            if (!container) return;
+            const today = new Date().toISOString().split('T')[0];
+            const sorted = [...restPeriods].sort((a,b) => a.startDate.localeCompare(b.startDate));
+            if (sorted.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:12px;">登録された休止期間はありません</p>';
+                return;
+            }
+            container.innerHTML = '<div class="rest-period-list">' + sorted.map(p => {
+                const isActive   = today >= p.startDate && today <= p.endDate;
+                const isUpcoming = p.startDate > today;
+                const days = Math.round((new Date(p.endDate) - new Date(p.startDate)) / 86400000) + 1;
+                const badge = isActive ? '<span class="rest-period-active">進行中</span>'
+                            : isUpcoming ? '<span class="rest-period-upcoming">予定</span>' : '';
+                return `
+                    <div class="rest-period-item">
+                        <div class="rest-period-emoji">${p.emoji}</div>
+                        <div class="rest-period-info">
+                            <div class="rest-period-label">${escapeHtml(p.label)}${badge}</div>
+                            <div class="rest-period-dates">${p.startDate} 〜 ${p.endDate}（${days}日間）</div>
+                        </div>
+                        <button class="small danger" onclick="deleteRestPeriod(${p.id})">削除</button>
+                    </div>`;
+            }).join('') + '</div>';
+        }
+
         function getStreak(habit) {
             let streak = 0;
             const today = new Date();
@@ -3190,6 +3365,8 @@
                 const checkDate = new Date(today);
                 checkDate.setDate(checkDate.getDate() - i);
                 const dateStr = checkDate.toISOString().split('T')[0];
+
+                if (isRestDay(dateStr)) continue; // 休止日はスキップ
 
                 const done = habit.type === 'time'
                     ? ((habit.timeLogs || {})[dateStr] || 0) > 0
@@ -3216,16 +3393,17 @@
                 d.setDate(d.getDate() - i);
                 const ds = d.toISOString().split('T')[0];
                 const done = isTime ? ((habit.timeLogs||{})[ds]||0) > 0 : (habit.completedDates||[]).includes(ds);
-                dates30.push({ ds, done, day: d.getDay() });
+                const isRest = isRestDay(ds);
+                dates30.push({ ds, done, day: d.getDay(), isRest });
             }
             const streak = getStreak(habit);
-            const last7  = dates30.slice(0, 7);
-            const prev7  = dates30.slice(7, 14);
+            const last7  = dates30.slice(0, 7).filter(d => !d.isRest);
+            const prev7  = dates30.slice(7, 14).filter(d => !d.isRest);
             const weekDone    = last7.filter(d => d.done).length;
             const prevWeekDone= prev7.filter(d => d.done).length;
-            const month30Done = dates30.filter(d => d.done).length;
+            const month30Done = dates30.filter(d => d.done && !d.isRest).length;
             let lastDoneAgo = 999;
-            for (let i = 0; i < 30; i++) { if (dates30[i].done) { lastDoneAgo = i; break; } }
+            for (let i = 0; i < 30; i++) { if (!dates30[i].isRest && dates30[i].done) { lastDoneAgo = i; break; } }
             const totalDone = isTime
                 ? Object.keys(habit.timeLogs||{}).filter(k => (habit.timeLogs[k]||0) > 0).length
                 : (habit.completedDates||[]).length;
@@ -3389,21 +3567,23 @@
                         const mins = timeLogs[dateStr] || 0;
                         weekTotal += mins;
                         const hasLog = mins > 0;
-                        const label = hasLog ? (mins >= 60 ? `${Math.floor(mins/60)}h${mins%60 ? (mins%60)+'m' : ''}` : `${mins}m`) : days[date.getDay()];
+                        const isRest3 = isRestDay(dateStr);
+                        const label = isRest3 ? getRestEmoji(dateStr) : (hasLog ? (mins >= 60 ? `${Math.floor(mins/60)}h${mins%60 ? (mins%60)+'m' : ''}` : `${mins}m`) : days[date.getDay()]);
                         weekHtml += `
-                            <div class="habit-day ${hasLog ? 'time-logged' : ''} ${isToday ? 'today' : ''}"
-                                onclick="toggleHabitDay(${habit.id}, '${dateStr}')"
-                                title="${formatDate(dateStr)}${hasLog ? '：'+mins+'分' : ''}">
+                            <div class="habit-day ${hasLog && !isRest3 ? 'time-logged' : ''} ${isToday ? 'today' : ''} ${isRest3 ? 'rest-day' : ''}"
+                                onclick="${isRest3 ? '' : `toggleHabitDay(${habit.id}, '${dateStr}')`}"
+                                title="${formatDate(dateStr)}${isRest3 ? ': '+getRestLabel(dateStr) : (hasLog ? '：'+mins+'分' : '')}">
                                 ${label}
                             </div>
                         `;
                     } else {
                         const isCompleted = (habit.completedDates || []).includes(dateStr);
+                        const isRest2 = isRestDay(dateStr);
                         weekHtml += `
-                            <div class="habit-day ${isCompleted ? 'completed' : ''} ${isToday ? 'today' : ''}"
-                                onclick="toggleHabitDay(${habit.id}, '${dateStr}')"
-                                title="${formatDate(dateStr)}">
-                                ${days[date.getDay()]}
+                            <div class="habit-day ${isCompleted ? 'completed' : ''} ${isToday ? 'today' : ''} ${isRest2 ? 'rest-day' : ''}"
+                                onclick="${isRest2 ? '' : `toggleHabitDay(${habit.id}, '${dateStr}')`}"
+                                title="${formatDate(dateStr)}${isRest2 ? ': '+getRestLabel(dateStr) : ''}">
+                                ${isRest2 ? getRestEmoji(dateStr) : days[date.getDay()]}
                             </div>
                         `;
                     }
@@ -3428,6 +3608,7 @@
                 `;
             }).join('');
             renderHabitAdvice();
+            renderRestPeriods();
         }
 
         // ============ 筋トレ機能 ============
@@ -4786,6 +4967,7 @@
                         if (data.schedules) { schedules = data.schedules; saveSchedules(); }
                         if (data.goals) { goals = data.goals; saveGoals(); }
                         if (data.habits) { habits = data.habits; saveHabits(); }
+                    if (data.restPeriods) { restPeriods = data.restPeriods; saveRestPeriods(); }
                         if (data.pomodoroData) { pomodoroData = data.pomodoroData; savePomodoroData(); }
                         if (data.workoutLogs) { workoutLogs = data.workoutLogs; saveWorkoutLogs(); }
                         if (data.studyLogs) { studyLogs = data.studyLogs; saveStudyLogs(); }
