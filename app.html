@@ -2534,7 +2534,7 @@
             <button class="tab-btn active" data-tab="dashboard"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="tab-icon"><path d="M8 1.5L1.5 6.5V14.5H6V10H10V14.5H14.5V6.5L8 1.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> ホーム</button>
             <button class="tab-btn" data-tab="tasks"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="tab-icon"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><polyline points="4.5,8 6.5,10 11.5,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> タスク</button>
             <button class="tab-btn" data-tab="habits"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="tab-icon"><path d="M8 2C4.7 2 2 4.7 2 8s2.7 6 6 6 6-2.7 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><polyline points="11,2 14,2 14,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> 習慣</button>
-            <button class="tab-btn" data-tab="records"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="tab-icon"><rect x="2" y="2" width="8" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><line x1="4.5" y1="6" x2="7.5" y2="6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="8.5" x2="7.5" y2="8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 5.5L14.5 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="14.5" cy="1" r="1.2" fill="currentColor"/></svg> 記録</button>
+            <button class="tab-btn" data-tab="records"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="tab-icon"><rect x="2" y="1.5" width="12" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><line x1="4.5" y1="5.5" x2="11.5" y2="5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="8" x2="11.5" y2="8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="10.5" x2="8.5" y2="10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> 日記</button>
             <button class="tab-btn" data-tab="plan"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="tab-icon"><rect x="2" y="3.5" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/><line x1="2" y1="7.5" x2="14" y2="7.5" stroke="currentColor" stroke-width="1.2"/><line x1="5.5" y1="2" x2="5.5" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="10.5" y1="2" x2="10.5" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> 計画</button>
             <button class="tab-btn" data-tab="pomodoro"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" class="tab-icon"><circle cx="8" cy="9.5" r="5.5" stroke="currentColor" stroke-width="1.5"/><polyline points="8,7 8,10 10.5,10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5.5" y1="2" x2="10.5" y2="2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> タイマー</button>
         </div>
@@ -2574,6 +2574,11 @@
 
         <!-- 習慣トラッカー -->
         <div id="habits" class="tab-content">
+            <div class="sub-tabs">
+                <button class="sub-tab-btn active" data-subtab="habitsMain"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="tab-icon" style="margin-right:4px"><path d="M8 2C4.7 2 2 4.7 2 8s2.7 6 6 6 6-2.7 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><polyline points="11,2 14,2 14,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> 習慣</button>
+                <button class="sub-tab-btn" data-subtab="actlog"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="tab-icon" style="margin-right:4px"><rect x="2" y="2" width="8" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><line x1="4.5" y1="6" x2="7.5" y2="6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="8.5" x2="7.5" y2="8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> 活動ログ</button>
+            </div>
+            <div id="habitsMain" class="sub-content active">
             <div class="card">
                 <h2>新しい習慣</h2>
                 <div class="input-group">
@@ -2624,73 +2629,9 @@
                 <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:18px;">ストリーク・達成率・パターンを分析した個別アドバイスです</p>
                 <div id="habitAdvice"></div>
             </div>
-        </div>
-
-        <!-- 記録 -->
-        <div id="records" class="tab-content">
-            <div class="sub-tabs">
-                <button class="sub-tab-btn active" data-subtab="actlog">📋 活動ログ</button>
-                <button class="sub-tab-btn" data-subtab="study">😴 睡眠・勉強</button>
-                <button class="sub-tab-btn" data-subtab="diary">📔 日記</button>
-                <button class="sub-tab-btn" data-subtab="books">📚 読書</button>
-                <button class="sub-tab-btn" data-subtab="workout">💪 筋トレ</button>
             </div>
-            <div id="actlog" class="sub-content active">
-                <div class="card">
-                    <h2>テンプレート</h2>
-                    <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:14px;">タップして記録フォームに反映。テンプレートなしでも自由入力できます。</p>
-                    <div class="act-template-grid" id="actTemplateGrid"></div>
-                    <div class="new-template-row">
-                        <input class="emoji-input" type="text" id="newTplEmoji" placeholder="📌" maxlength="2">
-                        <input type="text" id="newTplName" placeholder="テンプレート名（例：英語学習）">
-                        <input type="number" id="newTplDuration" placeholder="デフォルト分数" style="width:130px;" min="1">
-                        <button onclick="addActTemplate()">追加</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <h2>記録する</h2>
-                    <div class="study-form-grid">
-                        <div class="form-group">
-                            <label>日付</label>
-                            <input type="date" id="actDate">
-                        </div>
-                        <div class="form-group">
-                            <label>アクティビティ名</label>
-                            <div style="display:flex;gap:6px;">
-                                <input type="text" id="actEmojiDisp" style="width:52px;text-align:center;font-size:1.3rem;" placeholder="📌">
-                                <input type="text" id="actName" placeholder="何をしたか" style="flex:1;">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>時間</label>
-                            <div class="act-duration-row">
-                                <input type="number" id="actHours" min="0" max="23" value="0" placeholder="0">
-                                <span>時間</span>
-                                <input type="number" id="actMinutes" min="0" max="59" value="0" placeholder="0">
-                                <span>分</span>
-                            </div>
-                        </div>
-                        <div class="form-group study-content-group">
-                            <label>どのように行なったか</label>
-                            <textarea id="actMethod" placeholder="方法・内容・取り組み方など..."></textarea>
-                        </div>
-                        <div class="form-group study-content-group">
-                            <label>メモ（任意）</label>
-                            <textarea id="actMemo" placeholder="気づき、次回の課題など..."></textarea>
-                        </div>
-                    </div>
-                    <input type="hidden" id="actEditId">
-                    <div style="display:flex;gap:10px;">
-                        <button onclick="saveActLog()">記録する</button>
-                        <button class="secondary" onclick="clearActForm()">クリア</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <h2>記録一覧</h2>
-                    <div id="actLogList"></div>
-                </div>
-            </div>
-            <div id="diary" class="sub-content">
+            <div id="diary" class="sub-content active">
+                <p style="font-size:0.85rem;color:var(--text-muted);margin:0 0 16px 4px;">毎日の気分・よかったこと・振り返りを書きます。日記として長期間残ります。</p>
                 <div class="card">
                     <h2>今日の振り返り</h2>
                     <div class="study-form-grid">
@@ -2734,7 +2675,7 @@
             </div>
             <div id="study" class="sub-content">
             <div class="card">
-                <h2>記録を追加・編集</h2>
+                <h2>睡眠を記録</h2>
                 <div class="study-form-grid">
                     <div class="form-group">
                         <label>日付</label>
@@ -3056,7 +2997,7 @@
                 if (btn.dataset.tab === 'dashboard') renderDashboard();
                 else if (btn.dataset.tab === 'habits') renderHabits();
                 else if (btn.dataset.tab === 'pomodoro') updatePomodoroDisplay();
-                else if (btn.dataset.tab === 'records') initActLogTab();
+                else if (btn.dataset.tab === 'records') initDiaryTab();
                 else if (btn.dataset.tab === 'plan') renderCalendar();
             });
         });
@@ -3071,7 +3012,8 @@
                 parentTab.querySelector('#' + btn.dataset.subtab).classList.add('active');
 
                 const s = btn.dataset.subtab;
-                if (s === 'actlog') initActLogTab();
+                if (s === 'habitsMain') renderHabits();
+                else if (s === 'actlog') initActLogTab();
                 else if (s === 'diary') initDiaryTab();
                 else if (s === 'study') initStudyTab();
                 else if (s === 'books') initBooksTab();
