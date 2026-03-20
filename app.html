@@ -1687,6 +1687,115 @@
             box-shadow: 0 6px 24px rgba(0,0,0,0.2);
         }
 
+        /* ===== 習慣アドバイス ===== */
+        .habit-advice-summary {
+            background: rgba(99,102,241,0.08);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-bottom: 18px;
+        }
+        .habit-advice-overview {
+            font-size: 0.97rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .habit-advice-stats {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .advice-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .advice-badge.great  { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+        .advice-badge.good   { background: rgba(34,197,94,0.12);  color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+        .advice-badge.warning{ background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.28); }
+        .advice-badge.danger { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.28); }
+        .advice-badge.new    { background: rgba(99,102,241,0.12); color: var(--primary-light); border: 1px solid rgba(99,102,241,0.25); }
+
+        .habit-advice-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .habit-advice-item {
+            background: rgba(15,23,42,0.45);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-left: 3px solid var(--primary);
+            border-radius: 12px;
+            padding: 16px 18px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: listItemIn 0.3s ease both;
+        }
+        .habit-advice-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .habit-advice-item.advice-great   { border-left-color: #fbbf24; }
+        .habit-advice-item.advice-good    { border-left-color: #4ade80; }
+        .habit-advice-item.advice-warning { border-left-color: #f59e0b; }
+        .habit-advice-item.advice-danger  { border-left-color: #f87171; }
+        .habit-advice-item.advice-new     { border-left-color: var(--primary-light); }
+
+        .habit-advice-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .habit-advice-status-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(99,102,241,0.15);
+            color: var(--primary-light);
+            white-space: nowrap;
+        }
+        .advice-great  .habit-advice-status-badge { background: rgba(251,191,36,0.15);  color: #fbbf24; }
+        .advice-good   .habit-advice-status-badge { background: rgba(34,197,94,0.15);   color: #4ade80; }
+        .advice-warning .habit-advice-status-badge{ background: rgba(245,158,11,0.15);  color: #f59e0b; }
+        .advice-danger  .habit-advice-status-badge{ background: rgba(239,68,68,0.15);   color: #f87171; }
+        .habit-advice-name   { font-weight: 700; font-size: 0.97rem; flex: 1; }
+        .habit-advice-streak { font-size: 0.78rem; color: var(--text-muted); }
+        .habit-advice-msg {
+            font-size: 0.9rem;
+            line-height: 1.65;
+            margin-bottom: 8px;
+        }
+        .habit-advice-tip {
+            font-size: 0.83rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            padding: 8px 12px;
+            background: rgba(99,102,241,0.07);
+            border-radius: 8px;
+            border-left: 2px solid rgba(99,102,241,0.3);
+        }
+        .habit-advice-pattern {
+            font-size: 0.82rem;
+            color: var(--primary-light);
+            margin-top: 8px;
+            padding: 6px 12px;
+            background: rgba(99,102,241,0.08);
+            border-radius: 8px;
+        }
+        .habit-advice-empty {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+
         .habit-info {
             flex: 1;
         }
@@ -2410,6 +2519,14 @@
                 <h2>習慣一覧</h2>
                 <div id="habitList"></div>
             </div>
+
+            <div class="card" id="habitAdviceCard" style="display:none;">
+                <h2 style="display:flex;align-items:center;gap:10px;">
+                    <span style="background:linear-gradient(135deg,var(--primary),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">🧠 習慣アドバイス</span>
+                </h2>
+                <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:18px;">ストリーク・達成率・パターンを分析した個別アドバイスです</p>
+                <div id="habitAdvice"></div>
+            </div>
         </div>
 
         <!-- 記録 -->
@@ -3087,6 +3204,162 @@
             return streak;
         }
 
+
+        // ============ 習慣アドバイス ============
+        function analyzeHabit(habit) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const isTime = habit.type === 'time';
+            const dates30 = [];
+            for (let i = 0; i < 30; i++) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                const ds = d.toISOString().split('T')[0];
+                const done = isTime ? ((habit.timeLogs||{})[ds]||0) > 0 : (habit.completedDates||[]).includes(ds);
+                dates30.push({ ds, done, day: d.getDay() });
+            }
+            const streak = getStreak(habit);
+            const last7  = dates30.slice(0, 7);
+            const prev7  = dates30.slice(7, 14);
+            const weekDone    = last7.filter(d => d.done).length;
+            const prevWeekDone= prev7.filter(d => d.done).length;
+            const month30Done = dates30.filter(d => d.done).length;
+            let lastDoneAgo = 999;
+            for (let i = 0; i < 30; i++) { if (dates30[i].done) { lastDoneAgo = i; break; } }
+            const totalDone = isTime
+                ? Object.keys(habit.timeLogs||{}).filter(k => (habit.timeLogs[k]||0) > 0).length
+                : (habit.completedDates||[]).length;
+            const trend = weekDone > prevWeekDone ? 'up' : weekDone < prevWeekDone ? 'down' : 'flat';
+            // 平日/週末パターン
+            const wdItems  = last7.filter(d => d.day>=1 && d.day<=5);
+            const weItems  = last7.filter(d => d.day===0 || d.day===6);
+            const wdRate   = wdItems.length ? wdItems.filter(d=>d.done).length / wdItems.length : null;
+            const weRate   = weItems.length ? weItems.filter(d=>d.done).length / weItems.length : null;
+            return { streak, weekDone, prevWeekDone, month30Done, lastDoneAgo, totalDone, trend, wdRate, weRate };
+        }
+
+        function generateHabitAdvice(habit) {
+            const s = analyzeHabit(habit);
+            let status, cls, msg, tip, patternTip = null;
+
+            if (s.totalDone === 0) {
+                status='🌱 未着手'; cls='advice-new';
+                msg='まだ一度も記録がありません。今日が最高のスタートです。';
+                tip='最初の1日が一番難しい。今日だけ、1分だけでも試してみましょう。';
+            } else if (s.totalDone < 3) {
+                status='🌱 始めたばかり'; cls='advice-new';
+                msg='始めたばかりです！最初の7日間が習慣定着の山場です。';
+                tip='既存のルーティン（歯磨き・食事など）の直後に紐づけると定着しやすくなります。';
+            } else if (s.streak >= 30) {
+                status='🏆 継続の達人'; cls='advice-great';
+                msg=`${s.streak}日連続達成中！完璧なルーティンができ上がっています。`;
+                tip='もう習慣として完全に定着しています。次のレベルアップ（強度・時間増）を検討してみましょう。';
+            } else if (s.streak >= 14) {
+                status='🔥 絶好調'; cls='advice-great';
+                msg=`${s.streak}日連続継続中。素晴らしい粘り強さです！`;
+                tip = s.trend==='up'
+                    ? '先週より達成率が上がっています。この勢いを維持しましょう。'
+                    : `30日連続まであと${30-s.streak}日。ここが踏ん張りどころです。`;
+            } else if (s.streak >= 7) {
+                status='✅ 順調'; cls='advice-good';
+                msg=`${s.streak}日連続達成中。着実に習慣化が進んでいます。`;
+                tip=`21日で習慣が固まると言われています。あと${21-s.streak}日が勝負。`;
+            } else if (s.streak >= 3) {
+                status='📈 上り調子'; cls='advice-good';
+                msg=`${s.streak}日連続中。いいスタートです。ここで止めないことが大事。`;
+                tip='2日連続でやらないのが習慣崩れのサイン。明日も必ず続けましょう。';
+            } else if (s.streak === 1) {
+                status='⚡ 再開中'; cls='advice-warning';
+                msg=`昨日または今日から再スタートしました！この勢いを明日につなげましょう。`;
+                tip='再開した当日が一番大事。明日のアクションを今決めておきましょう。';
+            } else if (s.streak === 0 && s.lastDoneAgo <= 3) {
+                status='⚠️ 要注意'; cls='advice-warning';
+                msg=`${s.lastDoneAgo}日前から途切れています。今日中に再開しましょう。`;
+                tip=`月の達成率は${Math.round(s.month30Done/30*100)}%です。完璧を求めず、まず再開することが大事。`;
+            } else if (s.streak === 0 && s.lastDoneAgo <= 7) {
+                status='🔴 途切れ中'; cls='advice-danger';
+                msg=`${s.lastDoneAgo}日前に途切れました。今日が再開のチャンスです。`;
+                tip='途切れた理由を30秒だけ振り返りましょう。同じ障害を避ける工夫が次の継続につながります。';
+            } else if (s.streak === 0 && s.lastDoneAgo <= 30) {
+                status='😴 長期休止'; cls='advice-danger';
+                msg=`${s.lastDoneAgo}日間記録がありません。この習慣を続けますか？`;
+                tip='今の生活リズムに合わせて内容・頻度を見直しましょう。週3回など緩いルールへの変更もアリです。';
+            } else {
+                status='💤 休眠中'; cls='advice-danger';
+                msg='1ヶ月以上記録がありません。本当に必要な習慣か見直しましょう。';
+                tip='削除するか、今の自分に合った形にリセットすることも選択肢です。';
+            }
+
+            // 平日/週末パターン
+            if (s.wdRate !== null && s.weRate !== null) {
+                if (s.wdRate >= 0.7 && s.weRate < 0.3)
+                    patternTip = '📊 平日はできているのに週末に途切れやすいパターンです。週末用の簡易バージョンを用意してみましょう。';
+                else if (s.wdRate < 0.3 && s.weRate >= 0.7)
+                    patternTip = '📊 週末はできているのに平日に途切れやすいです。朝や通勤時間を活用してみましょう。';
+                else if (s.trend === 'down' && s.weekDone < s.prevWeekDone - 2)
+                    patternTip = '📊 先週より達成回数が減っています。何か負荷が増えていませんか？';
+            }
+
+            return { status, cls, msg, tip, patternTip, stats: s };
+        }
+
+        function renderHabitAdvice() {
+            const card = document.getElementById('habitAdviceCard');
+            const container = document.getElementById('habitAdvice');
+            if (!card || !container) return;
+            if (habits.length === 0) { card.style.display='none'; return; }
+            card.style.display = '';
+
+            const advices = habits.map(h => ({ habit: h, adv: generateHabitAdvice(h) }));
+            const counts = { great:0, good:0, warning:0, danger:0, new:0 };
+            advices.forEach(({ adv: a }) => {
+                if (a.cls==='advice-great')   counts.great++;
+                else if (a.cls==='advice-good')    counts.good++;
+                else if (a.cls==='advice-warning') counts.warning++;
+                else if (a.cls==='advice-danger')  counts.danger++;
+                else counts.new++;
+            });
+
+            const total = habits.length;
+            let overviewMsg = '';
+            if (counts.great + counts.good >= Math.ceil(total * 0.7)) {
+                overviewMsg = `全体的に好調です！${counts.great+counts.good}つの習慣が順調に継続できています。`;
+            } else if (counts.danger >= Math.ceil(total * 0.5)) {
+                overviewMsg = `${counts.danger}つの習慣が停滞中です。まず1つだけ再スタートしましょう。`;
+            } else {
+                const goodN = counts.great + counts.good;
+                const badN  = counts.warning + counts.danger;
+                overviewMsg = `${goodN > 0 ? goodN+'つ継続中、' : ''}${badN > 0 ? badN+'つ要注意、' : ''}${counts.new > 0 ? counts.new+'つ新規' : ''}`.replace(/、$/, '') + 'です。';
+            }
+
+            container.innerHTML = `
+                <div class="habit-advice-summary">
+                    <div class="habit-advice-overview">${overviewMsg}</div>
+                    <div class="habit-advice-stats">
+                        ${counts.great   ? `<span class="advice-badge great">🔥 好調 ${counts.great}</span>` : ''}
+                        ${counts.good    ? `<span class="advice-badge good">✅ 順調 ${counts.good}</span>` : ''}
+                        ${counts.warning ? `<span class="advice-badge warning">⚠️ 注意 ${counts.warning}</span>` : ''}
+                        ${counts.danger  ? `<span class="advice-badge danger">🔴 停滞 ${counts.danger}</span>` : ''}
+                        ${counts.new     ? `<span class="advice-badge new">🌱 新規 ${counts.new}</span>` : ''}
+                    </div>
+                </div>
+                <div class="habit-advice-list">
+                    ${advices.map(({ habit, adv: a }, i) => `
+                        <div class="habit-advice-item ${a.cls}" style="animation-delay:${i*0.05}s">
+                            <div class="habit-advice-header">
+                                <span class="habit-advice-status-badge">${a.status}</span>
+                                <span class="habit-advice-name">${escapeHtml(habit.name)}</span>
+                                <span class="habit-advice-streak">${a.stats.streak > 0 ? a.stats.streak+'日連続' : (a.stats.lastDoneAgo < 999 ? a.stats.lastDoneAgo+'日前' : '記録なし')}</span>
+                            </div>
+                            <div class="habit-advice-msg">${a.msg}</div>
+                            <div class="habit-advice-tip">💡 ${a.tip}</div>
+                            ${a.patternTip ? `<div class="habit-advice-pattern">${a.patternTip}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
         function renderHabits() {
             const list = document.getElementById('habitList');
 
@@ -3154,6 +3427,7 @@
                     </div>
                 `;
             }).join('');
+            renderHabitAdvice();
         }
 
         // ============ 筋トレ機能 ============
