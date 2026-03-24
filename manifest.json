@@ -1,0 +1,42 @@
+{
+  "name": "STRIDE | タスク管理",
+  "short_name": "STRIDE",
+  "description": "タスク・習慣・目標・日記を一元管理する個人ダッシュボード",
+  "start_url": "/task-manager/app.html",
+  "scope": "/task-manager/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#080e1a",
+  "theme_color": "#6366f1",
+  "lang": "ja",
+  "categories": ["productivity", "lifestyle"],
+  "icons": [
+    {
+      "src": "/task-manager/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/task-manager/icons/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "タスクを追加",
+      "short_name": "タスク",
+      "url": "/task-manager/app.html#tasks",
+      "description": "タスクタブを開く"
+    },
+    {
+      "name": "日記を書く",
+      "short_name": "日記",
+      "url": "/task-manager/app.html#records",
+      "description": "日記タブを開く"
+    }
+  ]
+}
