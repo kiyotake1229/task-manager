@@ -2541,6 +2541,47 @@
             .pomodoro-timer {
                 font-size: 2.8rem;
             }
+
+            /* 習慣アイテム: スマホで2段レイアウト */
+            .habit-item {
+                flex-wrap: wrap;
+                gap: 10px;
+                padding: 14px;
+            }
+
+            .habit-info {
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+
+            .habit-name {
+                font-size: 0.95rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            /* 週カレンダーを2行目に全幅展開 */
+            .habit-week {
+                order: 3;
+                width: 100%;
+                justify-content: space-between;
+                gap: 4px;
+            }
+
+            .habit-day {
+                flex: 1;
+                min-width: 0;
+                max-width: 42px;
+                height: 34px;
+                font-size: 0.7rem;
+                border-radius: 8px;
+            }
+
+            .habit-actions {
+                order: 2;
+                align-self: flex-start;
+            }
         }
     </style>
 </head>
