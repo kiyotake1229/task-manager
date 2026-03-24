@@ -1,4 +1,4 @@
-const CACHE_NAME = 'stride-v1';
+const CACHE_NAME = 'stride-v2';
 const ASSETS = [
   '/task-manager/app.html',
   '/task-manager/manifest.json',
@@ -24,18 +24,22 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
-// フェッチ: キャッシュ優先、なければネットワーク
+// フェッチ: app.html はネットワーク優先（最新を取得）、失敗時のみキャッシュ
 self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(response => {
-        // app.html は常に最新をキャッシュに更新
-        if (e.request.url.includes('app.html')) {
-          caches.open(CACHE_NAME).then(cache => cache.put(e.request, response.clone()));
-        }
+  const isHtml = e.request.url.includes('app.html');
+
+  if (isHtml) {
+    // ネットワーク優先: 常に最新を取得し、キャッシュも更新
+    e.respondWith(
+      fetch(e.request).then(response => {
+        caches.open(CACHE_NAME).then(cache => cache.put(e.request, response.clone()));
         return response;
-      }).catch(() => caches.match('/task-manager/app.html'));
-    })
-  );
+      }).catch(() => caches.match(e.request))
+    );
+  } else {
+    // その他（アイコン等）はキャッシュ優先
+    e.respondWith(
+      caches.match(e.request).then(cached => cached || fetch(e.request))
+    );
+  }
 });
