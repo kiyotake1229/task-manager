@@ -2583,6 +2583,73 @@
                 align-self: flex-start;
             }
         }
+
+        /* ===== スマホ追加修正 (480px以下) ===== */
+        @media (max-width: 480px) {
+
+            /* ポモドーロ統計の間隔 */
+            .pomodoro-stats {
+                gap: 20px;
+            }
+            .pomodoro-stat-number {
+                font-size: 1.6rem;
+            }
+
+            /* ポモドーロ設定行を縦並びに */
+            .settings-row {
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+            }
+
+            /* 統計カード: 2列固定 */
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .stat-card {
+                padding: 14px 10px;
+            }
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            /* モーダルのパディング縮小 */
+            .modal {
+                padding: 18px;
+                margin: 8px;
+                width: calc(100% - 16px);
+            }
+
+            /* グラフグリッド: 1列 */
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* 読書・勉強フォームグリッド: 1列 */
+            .book-form-grid,
+            .study-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* 活動ログテンプレートフォーム */
+            #newTplEmoji { width: 50px; }
+
+            /* 週次レビューのグリッド */
+            .weekly-review-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* 読書統計バー */
+            .reading-stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* タスクアイテムのメタ情報 */
+            .task-meta {
+                font-size: 0.75rem;
+            }
+        }
     </style>
 </head>
 <body>
