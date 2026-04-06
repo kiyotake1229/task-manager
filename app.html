@@ -100,6 +100,12 @@
             border-color: rgba(0,0,0,0.07);
             backdrop-filter: blur(8px);
         }
+        [data-theme="light"] .habit-heatmap-expand {
+            background: rgba(248,250,252,0.9);
+            border-color: rgba(0,0,0,0.07);
+        }
+        [data-theme="light"] .hm-empty { background: rgba(0,0,0,0.06); }
+        [data-theme="light"] .habit-progress-bar-wrap { background: rgba(0,0,0,0.08); }
         [data-theme="light"] .tabs {
             background: rgba(255,255,255,0.8);
             backdrop-filter: blur(16px);
@@ -1919,6 +1925,128 @@
         }
         .habit-day.rest-day:hover { transform: none !important; }
 
+        /* ===== 今日の進捗サマリー ===== */
+        .habit-today-summary {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .habit-today-ratio {
+            font-size: 2.6rem;
+            font-weight: 800;
+            line-height: 1;
+            background: linear-gradient(135deg,var(--primary),var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex-shrink: 0;
+            letter-spacing: -1px;
+        }
+        .habit-today-info { flex:1; min-width:0; }
+        .habit-today-label { font-size:0.85rem; color:var(--text-muted); margin-bottom:8px; }
+        .habit-progress-bar-wrap {
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+        }
+        .habit-progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg,var(--primary),var(--primary-light));
+            transition: width 0.7s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .habit-today-stats {
+            display: flex;
+            gap: 14px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .habit-today-stat { font-size:0.82rem; color:var(--text-muted); }
+        .habit-today-stat strong { color:var(--text); font-weight:700; }
+        .habit-today-all-done {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #4ade80;
+            animation: popIn 0.4s ease both;
+        }
+
+        /* ===== ストリーク節目バッジ ===== */
+        .habit-milestone {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-left: 6px;
+            vertical-align: middle;
+            animation: milestoneShine 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+        @keyframes milestoneShine {
+            from { transform:scale(0.6); opacity:0; }
+            to   { transform:scale(1);   opacity:1; }
+        }
+        .habit-milestone.m-bronze { background:rgba(180,120,60,0.18); color:#cd7f32; border:1px solid rgba(180,120,60,0.35); }
+        .habit-milestone.m-silver { background:rgba(148,163,184,0.18); color:#94a3b8; border:1px solid rgba(148,163,184,0.35); }
+        .habit-milestone.m-gold   { background:rgba(251,191,36,0.18);  color:#fbbf24; border:1px solid rgba(251,191,36,0.35); }
+        .habit-milestone.m-plat   { background:rgba(167,139,250,0.18); color:#a78bfa; border:1px solid rgba(167,139,250,0.35); }
+        .habit-milestone.m-legend { background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(167,139,250,0.15)); color:#fbbf24; border:1px solid rgba(251,191,36,0.4); }
+
+        /* ===== ヒートマップ ===== */
+        .habit-item-wrap { margin-bottom:12px; }
+        .habit-item-wrap .habit-item {
+            margin-bottom:0;
+            border-radius:14px;
+            transition: border-radius 0.2s, transform 0.25s cubic-bezier(0.34,1.1,0.64,1), border-color 0.25s, box-shadow 0.25s;
+        }
+        .habit-item-wrap .habit-item.heatmap-open { border-radius:14px 14px 0 0; }
+        .habit-heatmap-expand {
+            background: rgba(10,18,36,0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-top: none;
+            border-radius: 0 0 14px 14px;
+            padding: 14px 18px 16px;
+            animation: listItemIn 0.2s ease both;
+        }
+        .habit-heatmap-title {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+        .habit-heatmap-scroller { overflow-x: auto; padding-bottom: 4px; }
+        .hm-grid { display:flex; gap:3px; align-items:flex-start; }
+        .hm-col { display:flex; flex-direction:column; gap:3px; }
+        .hm-cell {
+            width:13px; height:13px; border-radius:3px;
+            cursor:default; transition:transform 0.1s; flex-shrink:0;
+        }
+        .hm-cell:hover { transform:scale(1.5); z-index:1; position:relative; }
+        .hm-empty  { background:rgba(255,255,255,0.06); }
+        .hm-rest   { background:rgba(99,102,241,0.12); border:1px dashed rgba(99,102,241,0.3); }
+        .hm-l1 { background:rgba(34,197,94,0.2); }
+        .hm-l2 { background:rgba(34,197,94,0.45); }
+        .hm-l3 { background:rgba(34,197,94,0.7); }
+        .hm-l4 { background:#22c55e; }
+        .hm-today { outline:2px solid var(--primary); outline-offset:1px; }
+        .hm-legend {
+            display:flex; align-items:center; gap:4px;
+            margin-top:8px; font-size:0.7rem; color:var(--text-muted);
+        }
+        .hm-legend-cell { width:11px; height:11px; border-radius:2px; flex-shrink:0; }
+        .habit-heatmap-btn {
+            font-size:0.74rem; padding:3px 9px; border-radius:8px;
+            background:rgba(99,102,241,0.1); color:var(--primary-light);
+            border:1px solid rgba(99,102,241,0.2); cursor:pointer; transition:all 0.2s;
+            white-space:nowrap;
+        }
+        .habit-heatmap-btn:hover { background:rgba(99,102,241,0.22); }
+
         .habit-advice-empty {
             color: var(--text-muted);
             font-size: 0.9rem;
@@ -2744,6 +2872,18 @@
                 <button class="sub-tab-btn" data-subtab="actlog"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="tab-icon" style="margin-right:4px"><rect x="2" y="2" width="8" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><line x1="4.5" y1="6" x2="7.5" y2="6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="8.5" x2="7.5" y2="8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> 活動ログ</button>
             </div>
             <div id="habitsMain" class="sub-content active">
+            <div class="card" id="habitTodayCard" style="display:none;">
+                <div class="habit-today-summary">
+                    <div class="habit-today-ratio" id="habitTodayRatio">0/0</div>
+                    <div class="habit-today-info">
+                        <div class="habit-today-label">今日の習慣 達成状況</div>
+                        <div class="habit-progress-bar-wrap">
+                            <div class="habit-progress-bar" id="habitProgressBar" style="width:0%"></div>
+                        </div>
+                        <div class="habit-today-stats" id="habitTodayStats"></div>
+                    </div>
+                </div>
+            </div>
             <div class="card">
                 <h2>新しい習慣</h2>
                 <div class="input-group">
@@ -3743,8 +3883,162 @@
             `;
         }
 
+        // ===== 今日の進捗サマリー =====
+        function renderTodayProgress() {
+            const card = document.getElementById('habitTodayCard');
+            if (!card) return;
+            if (habits.length === 0) { card.style.display = 'none'; return; }
+
+            const todayStr = new Date().toISOString().split('T')[0];
+            let done = 0;
+            habits.forEach(h => {
+                const isDone = h.type === 'time'
+                    ? ((h.timeLogs || {})[todayStr] || 0) > 0
+                    : (h.completedDates || []).includes(todayStr);
+                if (isDone) done++;
+            });
+
+            const total = habits.length;
+            const pct = total > 0 ? Math.round(done / total * 100) : 0;
+            const remaining = total - done;
+            const maxStreak = habits.reduce((m, h) => Math.max(m, getStreak(h)), 0);
+            const totalStreak = habits.reduce((s, h) => s + getStreak(h), 0);
+
+            document.getElementById('habitTodayRatio').textContent = `${done}/${total}`;
+            document.getElementById('habitProgressBar').style.width = pct + '%';
+
+            let statusMsg = pct === 100 ? '' : done === 0 ? '今日の習慣を始めましょう' : `残り${remaining}つ`;
+            document.getElementById('habitTodayStats').innerHTML = `
+                <span class="habit-today-stat"><strong>${pct}%</strong> 達成</span>
+                <span class="habit-today-stat"><strong>${maxStreak}日</strong> 最長連続</span>
+                ${totalStreak > 0 ? `<span class="habit-today-stat">合計 <strong>${totalStreak}日</strong> 積み上げ</span>` : ''}
+                ${statusMsg ? `<span class="habit-today-stat">${statusMsg}</span>` : ''}
+                ${pct === 100 ? '<span class="habit-today-all-done">全習慣クリア！</span>' : ''}
+            `;
+            card.style.display = '';
+        }
+
+        // ===== ストリーク節目バッジ =====
+        function getMilestoneBadge(streak) {
+            if (streak >= 365) return `<span class="habit-milestone m-legend">🌟 1年</span>`;
+            if (streak >= 180) return `<span class="habit-milestone m-legend">💎 180日</span>`;
+            if (streak >= 90)  return `<span class="habit-milestone m-plat">💎 90日</span>`;
+            if (streak >= 60)  return `<span class="habit-milestone m-plat">🏆 60日</span>`;
+            if (streak >= 30)  return `<span class="habit-milestone m-gold">🏆 30日</span>`;
+            if (streak >= 21)  return `<span class="habit-milestone m-gold">🥇 21日</span>`;
+            if (streak >= 14)  return `<span class="habit-milestone m-silver">🥈 14日</span>`;
+            if (streak >= 7)   return `<span class="habit-milestone m-bronze">🥉 7日</span>`;
+            return '';
+        }
+
+        // ===== ヒートマップ =====
+        function toggleHabitHeatmap(habitId) {
+            const wrap = document.getElementById(`heatmap-${habitId}`);
+            const btn = document.querySelector(`[data-heatmap-btn="${habitId}"]`);
+            const item = wrap ? wrap.previousElementSibling : null;
+            if (!wrap || !btn) return;
+            if (wrap.style.display === 'none') {
+                wrap.style.display = 'block';
+                if (item) item.classList.add('heatmap-open');
+                btn.textContent = '▲ 閉じる';
+                renderHabitHeatmap(habitId);
+            } else {
+                wrap.style.display = 'none';
+                if (item) item.classList.remove('heatmap-open');
+                btn.textContent = '▼ 90日';
+            }
+        }
+
+        function renderHabitHeatmap(habitId) {
+            const habit = habits.find(h => h.id === habitId);
+            const wrap = document.getElementById(`heatmap-${habitId}`);
+            if (!habit || !wrap) return;
+
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const todayStr = today.toISOString().split('T')[0];
+            const isTime = habit.type === 'time';
+            const DAYS = 90;
+            const dayLabels = ['日','月','火','水','木','金','土'];
+
+            // cells: 古い順→新しい順
+            const cells = [];
+            for (let i = DAYS - 1; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                const ds = d.toISOString().split('T')[0];
+                const isRest = isRestDay(ds);
+                let level = 0;
+                if (!isRest) {
+                    if (isTime) {
+                        const mins = (habit.timeLogs || {})[ds] || 0;
+                        level = mins >= 60 ? 4 : mins >= 30 ? 3 : mins >= 15 ? 2 : mins > 0 ? 1 : 0;
+                    } else {
+                        level = (habit.completedDates || []).includes(ds) ? 4 : 0;
+                    }
+                }
+                cells.push({ ds, d, isRest, isToday: ds === todayStr, level });
+            }
+
+            // 先頭をSundayに揃えるためパディング
+            const firstDow = cells[0].d.getDay();
+            const padded = [...Array(firstDow).fill(null), ...cells];
+            const weeks = [];
+            for (let i = 0; i < padded.length; i += 7) {
+                const w = padded.slice(i, i + 7);
+                while (w.length < 7) w.push(null);
+                weeks.push(w);
+            }
+
+            const doneCount = cells.filter(c => c.level > 0).length;
+            const activeDays = cells.filter(c => !c.isRest).length;
+            const doneRate = activeDays > 0 ? Math.round(doneCount / activeDays * 100) : 0;
+
+            // グリッド生成
+            let gridHtml = `<div class="hm-grid">`;
+            // 曜日ラベル列
+            gridHtml += `<div class="hm-col" style="margin-right:2px;">`;
+            dayLabels.forEach((label, i) => {
+                const show = i === 1 || i === 3 || i === 5;
+                gridHtml += `<div style="height:13px;font-size:0.6rem;color:var(--text-muted);line-height:13px;text-align:right;white-space:nowrap;width:14px;">${show ? label : ''}</div>`;
+            });
+            gridHtml += `</div>`;
+
+            weeks.forEach(week => {
+                gridHtml += `<div class="hm-col">`;
+                week.forEach(cell => {
+                    if (!cell) {
+                        gridHtml += `<div style="width:13px;height:13px;"></div>`;
+                    } else {
+                        let cls = cell.isRest ? 'hm-rest' : `hm-${cell.level === 0 ? 'empty' : 'l' + cell.level}`;
+                        if (cell.isToday) cls += ' hm-today';
+                        const dn = dayLabels[cell.d.getDay()];
+                        const ttip = `${cell.ds}(${dn})${cell.isRest ? ':休止' : cell.level > 0 ? ':達成' : ':未'}`;
+                        gridHtml += `<div class="hm-cell ${cls}" title="${ttip}"></div>`;
+                    }
+                });
+                gridHtml += `</div>`;
+            });
+            gridHtml += `</div>`;
+
+            wrap.innerHTML = `
+                <div class="habit-heatmap-title">過去90日 — ${doneCount}日達成 (${doneRate}%)</div>
+                <div class="habit-heatmap-scroller">${gridHtml}</div>
+                <div class="hm-legend">
+                    なし
+                    <div class="hm-legend-cell hm-empty"></div>
+                    <div class="hm-legend-cell hm-l1"></div>
+                    <div class="hm-legend-cell hm-l2"></div>
+                    <div class="hm-legend-cell hm-l3"></div>
+                    <div class="hm-legend-cell hm-l4"></div>
+                    多い
+                </div>
+            `;
+        }
+
         function renderHabits() {
             const list = document.getElementById('habitList');
+            renderTodayProgress();
 
             if (habits.length === 0) {
                 list.innerHTML = '<div class="empty-state"><p>習慣がありません</p><p>毎日続けたい習慣を追加しましょう</p></div>';
@@ -3798,17 +4092,22 @@
                     ? `<div class="habit-type-badge">⏱ 時間記録型${weekTotal > 0 ? `　今週 <span class="habit-week-total">${weekTotal}分</span>` : ''}</div>`
                     : `<div class="habit-type-badge">✅ チェック型</div>`;
 
+                const milestoneBadge = getMilestoneBadge(streak);
                 return `
-                    <div class="habit-item">
-                        <div class="habit-info">
-                            <div class="habit-name">${escapeHtml(habit.name)}</div>
-                            <div class="habit-streak">${streak > 0 ? `${streak}日連続` : '今日から始めよう'}</div>
-                            ${subInfo}
+                    <div class="habit-item-wrap">
+                        <div class="habit-item">
+                            <div class="habit-info">
+                                <div class="habit-name">${escapeHtml(habit.name)}</div>
+                                <div class="habit-streak">${streak > 0 ? `${streak}日連続` : '今日から始めよう'}${milestoneBadge}</div>
+                                ${subInfo}
+                            </div>
+                            <div class="habit-week">${weekHtml}</div>
+                            <div class="habit-actions">
+                                <button class="habit-heatmap-btn" data-heatmap-btn="${habit.id}" onclick="toggleHabitHeatmap(${habit.id})">▼ 90日</button>
+                                <button class="small danger" onclick="deleteHabit(${habit.id})">削除</button>
+                            </div>
                         </div>
-                        <div class="habit-week">${weekHtml}</div>
-                        <div class="habit-actions">
-                            <button class="small danger" onclick="deleteHabit(${habit.id})">削除</button>
-                        </div>
+                        <div id="heatmap-${habit.id}" class="habit-heatmap-expand" style="display:none;"></div>
                     </div>
                 `;
             }).join('');
